@@ -1,0 +1,29 @@
+// 对于style.less的调整
+
+// base
+@dpr: 2;
+@ratio: 80 / @dpr;
+
+.ro-questions {
+    .ro-btn-submit {
+        margin-top: unit(24px) / @ratio * 1rem;
+    }
+}
+
+// datePicker select
+.ro-text-view {
+    font-size: unit(17px) / @ratio * 1rem;
+    line-height: unit(20px) / @ratio * 1rem;
+    height: unit(20px) / @ratio * 1rem;
+}
+
+// uploader
+.ro-uploader {
+    min-height: 160px;
+}
+
+.ro-uploader-icon {
+    .icon {
+        font-size: 64px;
+    }
+}

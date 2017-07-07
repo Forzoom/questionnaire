@@ -1,0 +1,57 @@
+.ro-questions {
+    background-color: #f8f8f8;
+    padding-top: 1px; // hack for margin collapse
+    .ro-question-banner-wrap,
+    .ro-question-banner {
+        width: 100%;
+    }
+    .ro-question {
+        width: 100%;
+        margin-top: 1px;
+    }
+    .ro-questionnaire-submit-button {
+        padding: 24px 12px;
+        padding-bottom: 0;
+    }
+    .ro-required-tag {
+        &:before {
+            content: '*';
+            color: #ff0000;
+        }
+    }
+}
+
+// datePicker select
+.ro-text-view {
+    font-size: 17px;
+    line-height: 20px;
+    height: 20px;
+
+    &.placeholder {
+        color: #717171;
+    }
+}
+
+// number string
+.ro-input {
+    width: 100%;
+}
+
+// uploader
+.ro-uploader {
+    position: relative;
+    min-height: 160px;
+    text-align: center;
+}
+.ro-uploader-img {
+    width: 100%;
+}
+.ro-uploader-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    .icon {
+        font-size: 64px;
+    }
+}
