@@ -88,10 +88,7 @@
             updateImage(val) {
                 if (!isUndef(val) && val.indexOf('http') === 0) {
                     this.$refs.uploader.removeAll();
-                    this.$refs.uploader.add({
-                        image: val,
-                        serverId: null,
-                    });
+                    this.$refs.uploader.add(val, null);
                 }
             }
         },

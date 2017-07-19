@@ -1700,10 +1700,7 @@ exports.default = {
         updateImage: function updateImage(val) {
             if (!(0, _utils.isUndef)(val) && val.indexOf('http') === 0) {
                 this.$refs.uploader.removeAll();
-                this.$refs.uploader.add({
-                    image: val,
-                    serverId: null
-                });
+                this.$refs.uploader.add(val, null);
             }
         }
     },
