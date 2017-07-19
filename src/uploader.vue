@@ -7,7 +7,9 @@
                     :size="source.size"
                     @add="onAdd"
                     @remove="onRemove"
-                ></WechatUploader>
+                >
+                </WechatUploader>
+                <div class="weui-textarea-counter"><span>{{imageCount}}</span>/{{imageSize}}</div>
             </div>
         </div>
     </div>
@@ -24,6 +26,9 @@
                 required: true,
                 type: String,
             },
+            /**
+             * - size 允许的最大数量，默认为1
+             */
             source: {
                 type: Object,
                 default: function() {
@@ -36,11 +41,32 @@
                 type: String, // 输出的数据是一个string
             },
         },
+        computed: {
+            /**
+             * 当前已经上传的图片的数量
+             */
+            imageCount() {
+                return this.count;
+            },
+            /**
+             * 总的可以上传的图片数量
+             */
+            imageSize() {
+                return this.source.size;
+            },
+        },
+        data() {
+            return {
+                // 当前已经上传的图片数量
+                count: 0,
+            };
+        },
         methods: {
             /**
              * 当新图片添加时触发，将serverId发送出去
              */
             onAdd({ serverId, }) {
+                this.count++;
                 this.$emit('item', {
                     id: this.id,
                     result: serverId,
@@ -50,6 +76,7 @@
              * 当图片被删除时触发
              */
             onRemove() {
+                this.count--;
                 this.$emit('item', {
                     id: this.id,
                     result: null,
@@ -60,12 +87,11 @@
              */
             updateImage(val) {
                 if (!isUndef(val) && val.indexOf('http') === 0) {
-                    this.$refs.uploader.setImages([
-                        {
-                            image: val,
-                            serverId: null,
-                        },
-                    ]);
+                    this.$refs.uploader.removeAll();
+                    this.$refs.uploader.add({
+                        image: val,
+                        serverId: null,
+                    });
                 }
             }
         },

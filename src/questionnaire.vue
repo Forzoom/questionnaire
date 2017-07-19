@@ -61,8 +61,8 @@
 <script>
     // import Vue from 'vue';
     import MobileButton from '@forzoom/mobile-button';
-    import ROChoice from './choice.vue';
-    import ROMultipleChoice from './multipleChoice.vue';
+    import ROChoice from './choice.js';
+    import ROMultipleChoice from './multipleChoice.js';
     import ROAddressLocation from './addressLocation.vue';
     import ROAddressPicker from './addressPicker.vue';
     import ROTextarea from './textarea.vue';

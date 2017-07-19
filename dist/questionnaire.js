@@ -181,14 +181,44 @@ module.exports = function normalizeComponent (
 
 
 Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.placeholder = placeholder;
+exports.isUndef = isUndef;
+function placeholder(val) {
+  var placeholder = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+  return isUndef(val) ? placeholder : val;
+}
+
+function isUndef(val) {
+  return val === null || val === undefined;
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports._options = exports._Vue = undefined;
 exports.install = install;
 
-var _questionnaire = __webpack_require__(2);
+var _questionnaire = __webpack_require__(23);
 
 var _questionnaire2 = _interopRequireDefault(_questionnaire);
+
+var _choice = __webpack_require__(3);
+
+var _choice2 = _interopRequireDefault(_choice);
+
+var _multipleChoice = __webpack_require__(4);
+
+var _multipleChoice2 = _interopRequireDefault(_multipleChoice);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -210,39 +240,281 @@ function install(Vue, options) {
     console.log('[questionnaire] installed');
 
     Vue.component('Questionnaire', _questionnaire2.default);
+    Vue.component('ROChoice', _choice2.default);
+    Vue.component('ROMultipleChoice', _multipleChoice2.default);
 }
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-function injectStyle (ssrContext) {
-  __webpack_require__(39)
-}
-var Component = __webpack_require__(0)(
-  /* script */
-  __webpack_require__(10),
-  /* template */
-  __webpack_require__(33),
-  /* styles */
-  injectStyle,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-
-module.exports = Component.exports
-
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-!function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports["mobile-button"]=e():t["mobile-button"]=e()}(this,function(){return function(t){function e(o){if(n[o])return n[o].exports;var r=n[o]={i:o,l:!1,exports:{}};return t[o].call(r.exports,r,r.exports,e),r.l=!0,r.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,o){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:o})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=0)}([function(t,e,n){"use strict";function o(t){if(Array.isArray(t)){for(var e=0,n=Array(t.length);e<t.length;e++)n[e]=t[e];return n}return Array.from(t)}Object.defineProperty(e,"__esModule",{value:!0});var r=function(t){return null===t||void 0===t};e.default={name:"MobileButton",props:{id:{type:String},name:{type:String},classList:{type:Array},tag:null,to:null,isDisabled:{type:Boolean,default:!1},isBlock:{type:Boolean,default:!1}},render:function(t){var e=this,n=["btn","btn-mobile",r(e.name)?null:"btn-"+e.name].concat(o(e.classList||[]),[e.isDisabled?"disabled":null,e.isBlock?"btn-block":null]),i=r(e.tag)?"a":e.tag,l=r(e.id)?{}:{id:e.id},u={};return r(e.to)||("router-link"===i?u.to=e.to:"a"===i&&(l.href=e.to)),t(i,{class:n,domProps:l,on:{click:function(){e.isDisabled||e.$emit("click")}}},e.$slots.default)}}}])});
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// <template>
+//     <div class="weui-cells weui-cells_radio">
+//         <label v-for="choice in source" class="weui-cell weui-check__label" :for="`${id}_${choice.value}`">
+//             <div class="weui-cell__bd">
+//                 <p>{{choice.text}}</p>
+//             </div>
+//             <div class="weui-cell__ft" :style="{color: color}">
+//                 <input type="radio" class="weui-check" :id="`${id}_${choice.value}`"  :value="choice.value" v-model="val">
+//                 <span class="weui-icon-checked"></span>
+//             </div>
+//         </label>
+//     </div>
+// </template>
+
+
+exports.default = {
+    name: 'ROChoice',
+    props: {
+        /**
+         *
+         */
+        id: {
+            required: true,
+            type: String
+        },
+        // {value: string, text: string}
+        source: {
+            required: true,
+            type: Array,
+            default: function _default() {
+                return [];
+            }
+        },
+        /**
+         * 结果
+         */
+        result: {
+            type: String
+        },
+        /**
+         * 勾选框所显示的颜色
+         */
+        color: '' // 颜色
+    },
+    computed: {
+        val: {
+            get: function get() {
+                return this.result;
+            },
+            set: function set(val) {
+                this.$emit('item', {
+                    id: this.id,
+                    result: val
+                });
+            }
+        }
+    },
+    render: function render(h) {
+        var vm = this;
+        var labels = [];
+
+        var _loop = function _loop(i, len) {
+            var choice = vm.source[i];
+            // 渲染bd
+            var bd = h('div', {
+                'class': ['weui-cell__bd']
+            }, [h('p', {}, choice.text)]);
+            // 渲染ft
+            var ft = h('div', {
+                'class': ['weui-cell__ft'],
+                style: {
+                    color: vm.color
+                }
+            }, [
+            // input
+            h('input', {
+                'class': ['weui-check'],
+                attrs: {
+                    type: 'radio',
+                    id: vm.id + '_' + choice.value,
+                    value: choice.value
+                    // checked: false,
+                },
+                domProps: {
+                    checked: choice.value === vm.val
+                }
+            }),
+            // span
+            h('span', {
+                'class': ['weui-icon-checked']
+            })]);
+            // label
+            var label = h('label', {
+                'class': ['weui-cell', 'weui-check__label'],
+                attrs: {
+                    for: vm.id + '_' + choice.value
+                },
+                on: {
+                    click: function click(val) {
+                        vm.val = choice.value;
+                    }
+                }
+            }, [bd, ft]);
+
+            labels.push(label);
+        };
+
+        for (var i = 0, len = vm.source.length; i < len; i++) {
+            _loop(i, len);
+        }
+
+        return h('div', {
+            'class': ['weui-cells', 'weui-cells_radio']
+        }, labels);
+    }
+};
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// <template>
+//     <div class="weui-cells weui-cells_checkbox">
+//         <label v-for="choice in source" class="weui-cell weui-check__label" :for="`${id}_${choice.value}`">
+//             <div class="weui-cell__hd" :style="{color: color}">
+//                 <input type="checkbox" class="weui-check" :id="`${id}_${choice.value}`" :value="choice.value"  v-model="val">
+//                 <i class="weui-icon-checked"></i>
+//             </div>
+//             <div class="weui-cell__bd">
+//                 <p>{{choice.text}}</p>
+//             </div>
+//         </label>
+//     </div>
+// </template>
+
+exports.default = {
+    name: 'ROMultiChoice',
+    props: {
+        id: {
+            required: true,
+            type: String
+        },
+        // {value: string, text: string}
+        source: {
+            required: true,
+            type: Array,
+            default: function _default() {
+                return [];
+            }
+        },
+        result: {
+            type: Array,
+            default: function _default() {
+                return [];
+            }
+        },
+        color: ''
+    },
+    data: function data() {
+        return {
+            // 最终的结果
+            val: []
+        };
+    },
+
+    watch: {
+        '$prop.result': function $propResult(val) {
+            this.val = val;
+        },
+        val: function val(_val) {
+            this.$emit('item', {
+                id: this.id,
+                result: _val
+            });
+        }
+    },
+    mounted: function mounted() {
+        this.val = this.result;
+    },
+    render: function render(h) {
+        var vm = this;
+        var labels = [];
+
+        var _loop = function _loop(i, len) {
+            var choice = vm.source[i];
+            // 渲染bd
+            var hd = h('div', {
+                'class': ['weui-cell__hd']
+            }, [h('p', {}, choice.text)]);
+            // 渲染ft
+            var bd = h('div', {
+                'class': ['weui-cell__bd'],
+                style: {
+                    color: vm.color
+                }
+            }, [
+            // input
+            h('input', {
+                'class': ['weui-check'],
+                attrs: {
+                    type: 'checkbox',
+                    id: vm.id + '_' + choice.value,
+                    value: choice.value
+                    // checked: false,
+                },
+                domProps: {
+                    checked: vm.val.indexOf(choice.value) !== -1
+                }
+            }),
+            // span
+            h('span', {
+                'class': ['weui-icon-checked']
+            })]);
+            // label
+            var label = h('label', {
+                'class': ['weui-cell', 'weui-check__label'],
+                attrs: {
+                    for: vm.id + '_' + choice.value
+                },
+                on: {
+                    click: function toggle(e) {
+                        var pos = vm.val.indexOf(choice.value);
+                        // 已经存在的情况下
+                        if (pos !== -1) {
+                            vm.val.splice(pos, 1);
+                        } else {
+                            // 不存在的情况下
+                            vm.val.push(choice.value);
+                        }
+                        e.preventDefault();
+                    }
+                }
+            }, [hd, bd]);
+
+            labels.push(label);
+        };
+
+        for (var i = 0, len = vm.source.length; i < len; i++) {
+            _loop(i, len);
+        }
+
+        return h('div', {
+            'class': ['weui-cells', 'weui-cells_checkbox']
+        }, labels);
+    }
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports["mobile-button"]=e():t["mobile-button"]=e()}(this,function(){return function(t){function e(o){if(n[o])return n[o].exports;var r=n[o]={i:o,l:!1,exports:{}};return t[o].call(r.exports,r,r.exports,e),r.l=!0,r.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,o){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:o})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=0)}([function(t,e,n){"use strict";function o(t){if(Array.isArray(t)){for(var e=0,n=Array(t.length);e<t.length;e++)n[e]=t[e];return n}return Array.from(t)}Object.defineProperty(e,"__esModule",{value:!0});var r=function(t){return null===t||void 0===t};e.default={name:"MobileButton",props:{id:{type:String},name:{type:String},classList:{type:Array},tag:null,to:null,isDisabled:{type:Boolean,default:!1},isBlock:{type:Boolean,default:!1}},render:function(t){var e=this,n=["btn","btn-mobile",r(e.name)?null:"btn-"+e.name].concat(o(e.classList||[]),[e.isDisabled?"disabled":null,e.isBlock?"btn-block":null]),i=r(e.tag)?"a":e.tag,l=r(e.id)?{}:{id:e.id},u={};return r(e.to)||("router-link"===i?u.to=e.to:"a"===i&&(l.href=e.to)),t(i,{class:n,domProps:l,on:{click:function(){e.isDisabled||e.$emit("click")}}},e.$slots.default)}}}])});
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -266,9 +538,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 
-var _wx = __webpack_require__(17);
+var _wx = __webpack_require__(16);
 
-var _install = __webpack_require__(1);
+var _install = __webpack_require__(2);
 
 exports.default = {
     name: 'ROAddressLocation',
@@ -354,7 +626,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -387,7 +659,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 //
 //
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(1);
 
 var _address = __webpack_require__(15);
 
@@ -539,68 +811,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-exports.default = {
-    name: 'ROChoice',
-    props: {
-        id: {
-            required: true,
-            type: String
-        },
-        // {value: string, text: string}
-        source: {
-            required: true,
-            type: Array,
-            default: function _default() {
-                return [];
-            }
-        },
-        result: {
-            type: String
-        },
-        color: '' // 颜色
-    },
-    computed: {
-        val: {
-            get: function get() {
-                return this.result;
-            },
-            set: function set(val) {
-                this.$emit('item', {
-                    id: this.id,
-                    result: val
-                });
-            }
-        }
-
-    }
-};
-
-/***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -610,7 +821,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(1);
 
 // find MONTH_DAY fail in safari
 // const MONTH_DAY = [ null, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, ];
@@ -800,7 +1011,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -924,66 +1135,6 @@ exports.default = {
 };
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-exports.default = {
-    name: 'ROMultiChoice',
-    props: {
-        id: {
-            required: true,
-            type: String
-        },
-        // {value: string, text: string}
-        source: {
-            required: true,
-            type: Array,
-            default: function _default() {
-                return [];
-            }
-        },
-        result: {
-            type: Array
-        },
-        color: ''
-    },
-    computed: {
-        val: {
-            get: function get() {
-                return this.result;
-            },
-            set: function set(val) {
-                this.$emit('item', {
-                    id: this.id,
-                    result: val
-                });
-            }
-        }
-    }
-};
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -994,43 +1145,43 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _mobileButton = __webpack_require__(3);
+var _mobileButton = __webpack_require__(5);
 
 var _mobileButton2 = _interopRequireDefault(_mobileButton);
 
-var _choice = __webpack_require__(22);
+var _choice = __webpack_require__(3);
 
 var _choice2 = _interopRequireDefault(_choice);
 
-var _multipleChoice = __webpack_require__(25);
+var _multipleChoice = __webpack_require__(4);
 
 var _multipleChoice2 = _interopRequireDefault(_multipleChoice);
 
-var _addressLocation = __webpack_require__(20);
+var _addressLocation = __webpack_require__(19);
 
 var _addressLocation2 = _interopRequireDefault(_addressLocation);
 
-var _addressPicker = __webpack_require__(21);
+var _addressPicker = __webpack_require__(20);
 
 var _addressPicker2 = _interopRequireDefault(_addressPicker);
 
-var _textarea = __webpack_require__(27);
+var _textarea = __webpack_require__(25);
 
 var _textarea2 = _interopRequireDefault(_textarea);
 
-var _uploader = __webpack_require__(28);
+var _uploader = __webpack_require__(26);
 
 var _uploader2 = _interopRequireDefault(_uploader);
 
-var _datePicker = __webpack_require__(23);
+var _datePicker = __webpack_require__(21);
 
 var _datePicker2 = _interopRequireDefault(_datePicker);
 
-var _select = __webpack_require__(26);
+var _select = __webpack_require__(24);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _input = __webpack_require__(24);
+var _input = __webpack_require__(22);
 
 var _input2 = _interopRequireDefault(_input);
 
@@ -1284,7 +1435,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(1);
 
 exports.default = {
     name: 'ROSelect',
@@ -1472,7 +1623,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(1);
 
 exports.default = {
     name: 'ROUploader',
@@ -1481,6 +1632,9 @@ exports.default = {
             required: true,
             type: String
         },
+        /**
+         * - size 允许的最大数量，默认为1
+         */
         source: {
             type: Object,
             default: function _default() {
@@ -1493,6 +1647,28 @@ exports.default = {
             type: String // 输出的数据是一个string
         }
     },
+    computed: {
+        /**
+         * 当前已经上传的图片的数量
+         */
+        imageCount: function imageCount() {
+            return this.count;
+        },
+
+        /**
+         * 总的可以上传的图片数量
+         */
+        imageSize: function imageSize() {
+            return this.source.size;
+        }
+    },
+    data: function data() {
+        return {
+            // 当前已经上传的图片数量
+            count: 0
+        };
+    },
+
     methods: {
         /**
          * 当新图片添加时触发，将serverId发送出去
@@ -1500,6 +1676,7 @@ exports.default = {
         onAdd: function onAdd(_ref) {
             var serverId = _ref.serverId;
 
+            this.count++;
             this.$emit('item', {
                 id: this.id,
                 result: serverId
@@ -1510,6 +1687,7 @@ exports.default = {
          * 当图片被删除时触发
          */
         onRemove: function onRemove() {
+            this.count--;
             this.$emit('item', {
                 id: this.id,
                 result: null
@@ -1521,10 +1699,11 @@ exports.default = {
          */
         updateImage: function updateImage(val) {
             if (!(0, _utils.isUndef)(val) && val.indexOf('http') === 0) {
-                this.$refs.uploader.setImages([{
+                this.$refs.uploader.removeAll();
+                this.$refs.uploader.add({
                     image: val,
                     serverId: null
-                }]);
+                });
             }
         }
     },
@@ -1553,6 +1732,8 @@ exports.default = {
 //
 //
 //
+//
+//
 
 /***/ }),
 /* 14 */
@@ -1565,7 +1746,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _install = __webpack_require__(1);
+var _install = __webpack_require__(2);
 
 exports.default = {
   install: _install.install
@@ -3702,28 +3883,6 @@ exports.default = [{
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.placeholder = placeholder;
-exports.isUndef = isUndef;
-function placeholder(val) {
-  var placeholder = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-
-  return isUndef(val) ? placeholder : val;
-}
-
-function isUndef(val) {
-  return val === null || val === undefined;
-}
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.getLocation = getLocation;
@@ -3765,10 +3924,10 @@ function getLocation() {
 }
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(19)(undefined);
+exports = module.exports = __webpack_require__(18)(undefined);
 // imports
 
 
@@ -3779,7 +3938,7 @@ exports.push([module.i, ".ro-questions{background-color:#f8f8f8;padding-top:1px}
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /*
@@ -3861,14 +4020,34 @@ function toComment(sourceMap) {
 
 
 /***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(0)(
+  /* script */
+  __webpack_require__(6),
+  /* template */
+  __webpack_require__(28),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+
+module.exports = Component.exports
+
+
+/***/ }),
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(4),
+  __webpack_require__(7),
   /* template */
-  __webpack_require__(32),
+  __webpack_require__(30),
   /* styles */
   null,
   /* scopeId */
@@ -3886,9 +4065,9 @@ module.exports = Component.exports
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(5),
+  __webpack_require__(8),
   /* template */
-  __webpack_require__(34),
+  __webpack_require__(32),
   /* styles */
   null,
   /* scopeId */
@@ -3906,9 +4085,9 @@ module.exports = Component.exports
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(6),
+  __webpack_require__(9),
   /* template */
-  __webpack_require__(29),
+  __webpack_require__(27),
   /* styles */
   null,
   /* scopeId */
@@ -3924,13 +4103,16 @@ module.exports = Component.exports
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
+function injectStyle (ssrContext) {
+  __webpack_require__(35)
+}
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(7),
+  __webpack_require__(10),
   /* template */
-  __webpack_require__(36),
+  __webpack_require__(29),
   /* styles */
-  null,
+  injectStyle,
   /* scopeId */
   null,
   /* moduleIdentifier (server only) */
@@ -3946,9 +4128,9 @@ module.exports = Component.exports
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(8),
+  __webpack_require__(11),
   /* template */
-  __webpack_require__(30),
+  __webpack_require__(33),
   /* styles */
   null,
   /* scopeId */
@@ -3966,9 +4148,9 @@ module.exports = Component.exports
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(9),
+  __webpack_require__(12),
   /* template */
-  __webpack_require__(31),
+  __webpack_require__(34),
   /* styles */
   null,
   /* scopeId */
@@ -3986,9 +4168,9 @@ module.exports = Component.exports
 
 var Component = __webpack_require__(0)(
   /* script */
-  __webpack_require__(11),
+  __webpack_require__(13),
   /* template */
-  __webpack_require__(37),
+  __webpack_require__(31),
   /* styles */
   null,
   /* scopeId */
@@ -4002,93 +4184,6 @@ module.exports = Component.exports
 
 /***/ }),
 /* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(0)(
-  /* script */
-  __webpack_require__(12),
-  /* template */
-  __webpack_require__(38),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(0)(
-  /* script */
-  __webpack_require__(13),
-  /* template */
-  __webpack_require__(35),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "weui-cells weui-cells_radio"
-  }, _vm._l((_vm.source), function(choice) {
-    return _c('label', {
-      staticClass: "weui-cell weui-check__label",
-      attrs: {
-        "for": (_vm.id + "_" + (choice.value))
-      }
-    }, [_c('div', {
-      staticClass: "weui-cell__bd"
-    }, [_c('p', [_vm._v(_vm._s(choice.text))])]), _vm._v(" "), _c('div', {
-      staticClass: "weui-cell__ft",
-      style: ({
-        color: _vm.color
-      })
-    }, [_c('input', {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: (_vm.val),
-        expression: "val"
-      }],
-      staticClass: "weui-check",
-      attrs: {
-        "type": "radio",
-        "id": (_vm.id + "_" + (choice.value))
-      },
-      domProps: {
-        "value": choice.value,
-        "checked": _vm._q(_vm.val, choice.value)
-      },
-      on: {
-        "__c": function($event) {
-          _vm.val = choice.value
-        }
-      }
-    }), _vm._v(" "), _c('span', {
-      staticClass: "weui-icon-checked"
-    })])])
-  }))
-},staticRenderFns: []}
-
-/***/ }),
-/* 30 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4158,67 +4253,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "weui-cells weui-cells_checkbox"
-  }, _vm._l((_vm.source), function(choice) {
-    return _c('label', {
-      staticClass: "weui-cell weui-check__label",
-      attrs: {
-        "for": (_vm.id + "_" + (choice.value))
-      }
-    }, [_c('div', {
-      staticClass: "weui-cell__hd",
-      style: ({
-        color: _vm.color
-      })
-    }, [_c('input', {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: (_vm.val),
-        expression: "val"
-      }],
-      staticClass: "weui-check",
-      attrs: {
-        "type": "checkbox",
-        "id": (_vm.id + "_" + (choice.value))
-      },
-      domProps: {
-        "value": choice.value,
-        "checked": Array.isArray(_vm.val) ? _vm._i(_vm.val, choice.value) > -1 : (_vm.val)
-      },
-      on: {
-        "__c": function($event) {
-          var $$a = _vm.val,
-            $$el = $event.target,
-            $$c = $$el.checked ? (true) : (false);
-          if (Array.isArray($$a)) {
-            var $$v = choice.value,
-              $$i = _vm._i($$a, $$v);
-            if ($$c) {
-              $$i < 0 && (_vm.val = $$a.concat($$v))
-            } else {
-              $$i > -1 && (_vm.val = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
-            }
-          } else {
-            _vm.val = $$c
-          }
-        }
-      }
-    }), _vm._v(" "), _c('i', {
-      staticClass: "weui-icon-checked"
-    })]), _vm._v(" "), _c('div', {
-      staticClass: "weui-cell__bd"
-    }, [_c('p', [_vm._v(_vm._s(choice.text))])])])
-  }))
-},staticRenderFns: []}
-
-/***/ }),
-/* 32 */
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4258,7 +4293,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 33 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4357,7 +4392,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 }]}
 
 /***/ }),
-/* 34 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4419,7 +4454,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 35 */
+/* 31 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4438,11 +4473,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "add": _vm.onAdd,
       "remove": _vm.onRemove
     }
-  })], 1)])])
+  }), _vm._v(" "), _c('div', {
+    staticClass: "weui-textarea-counter"
+  }, [_c('span', [_vm._v(_vm._s(_vm.imageCount))]), _vm._v("/" + _vm._s(_vm.imageSize))])], 1)])])
 },staticRenderFns: []}
 
 /***/ }),
-/* 36 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4503,7 +4540,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 37 */
+/* 33 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4564,7 +4601,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 38 */
+/* 34 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4601,20 +4638,20 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 39 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(18);
+var content = __webpack_require__(17);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(40)("30a9aa3a", content, true);
+var update = __webpack_require__(36)("30a9aa3a", content, true);
 
 /***/ }),
-/* 40 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4633,7 +4670,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(41)
+var listToStyles = __webpack_require__(37)
 
 /*
 type StyleObject = {
@@ -4835,7 +4872,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 41 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /**

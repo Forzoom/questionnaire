@@ -1,4 +1,6 @@
 import Questionnaire from './questionnaire.vue';
+import ROChoice from './choice.js';
+import ROMultipleChoice from './multipleChoice.js';
 
 export let _Vue;
 export let _options;
@@ -18,4 +20,6 @@ export function install(Vue, options) {
     console.log('[questionnaire] installed');
 
     Vue.component('Questionnaire', Questionnaire);
+    Vue.component('ROChoice', ROChoice);
+    Vue.component('ROMultipleChoice', ROMultipleChoice);
 }
