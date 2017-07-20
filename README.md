@@ -62,7 +62,16 @@ normalize-weui不再对颜色进行处理
 
 1. 修复_Vue在引入文件时未定义的问题
 
-#### v0.0.41
+#### v0.0.41(存在错误，在0.0.42中修复)
 
 1. 优化choice/multipleChoice代码，体积更小
 1. 优化uploader样式，添加数量提示
+
+#### v0.0.42
+
+1. 修复0.0.41中uploader的错误
+
+#### v0.0.43
+
+1. 允许使用requiredCondition
+2. 优化uploader代码

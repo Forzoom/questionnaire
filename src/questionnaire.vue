@@ -9,7 +9,7 @@
         </div>
         <div class="ro-question" :key="question.id" v-for="(question, index) in questions">
             <div class="weui-cells__title">
-                {{index + 1}}.{{question.caption}}<span class="ro-required-tag" v-if="question.meta && question.meta.isRequired"></span>
+                {{index + 1}}.{{question.caption}}<span class="ro-required-tag" v-if="required[question.id]"></span>
             </div>
             <component
                 :is="question.type"
@@ -59,14 +59,16 @@
 </template>
 
 <script>
-    // import Vue from 'vue';
+    import {
+        _Vue,
+    } from './install.js';
     import MobileButton from '@forzoom/mobile-button';
     import ROChoice from './choice.js';
     import ROMultipleChoice from './multipleChoice.js';
     import ROAddressLocation from './addressLocation.vue';
     import ROAddressPicker from './addressPicker.vue';
     import ROTextarea from './textarea.vue';
-    import ROUploader from './uploader.vue';
+    import ROUploader from './uploader.js';
     import RODatePicker from './datePicker.vue';
     import ROSelect from './select.vue';
     import ROInput from './input.vue';
@@ -85,37 +87,54 @@
             MobileButton,
         },
         props: {
-            // banner链接
+            /**
+             * banner链接，存在的情况下，将显示头部banner
+             */
             banner: {
                 type: String,
             },
-            // 问卷数据
+            /**
+             * 问卷数据
+             */
             questions: {
                 type: Array,
                 default: function() {
                     return [];
                 },
             },
-            // 是否禁止提交
+            /**
+             * 是否禁止提交
+             */
             disableSubmit: {
                 type: Boolean,
                 default: false,
             },
-            // 禁止提交时显示文本
+            /**
+             * 禁止提交时显示文本
+             */
             disableHint: {
                 type: String,
                 default: '',
             },
-            // 允许提交文本
+            /**
+             * 允许提交文本
+             */
             allowHint: {
                 type: String,
                 default: '提交',
             },
-            // 提醒填写文本
+            /**
+             * 提醒填写文本
+             */
             fillHint: {
                 type: String,
                 default: '未填写完整',
             },
+            /**
+             * 需要统一的颜色，将应用在
+             *  ROChoice
+             *  ROMultipleChoice
+             */
             color: {
                 required: true,
                 type: String,
@@ -129,6 +148,15 @@
                     return '';
                 },
             },
+            /**
+             * 要求检查的required，包含类型 {type: 'equal', key, value}
+             */
+            requiredCondition: {
+                type: Array,
+                default() {
+                    return [];
+                },
+            }
         },
         data: function() {
             return {
@@ -141,6 +169,7 @@
             };
         },
         computed: {
+            // 是否必填都已经填写完成
             isComplete: function() {
                 console.log('in isComplete', this.warnCount);
                 if (this.warnCount > 0) {
@@ -149,9 +178,9 @@
                 let result = true;
                 for (let i = 0, len = this.questions.length; i < len; i++) {
                     const question = this.questions[i];
-                    const meta = question.meta || {};
                     const qResult = question.result;
-                    if (meta.isRequired && (qResult === '' || qResult === null || (Object.prototype.toString.call(qResult) === '[object Array]' && qResult.length === 0))) {
+                    const isRequired = this.required[question.id];
+                    if (isRequired && (qResult === '' || qResult === null || (Object.prototype.toString.call(qResult) === '[object Array]' && qResult.length === 0))) {
                         result = false;
                         break;
                     }
@@ -169,11 +198,54 @@
                     return this.fillHint;
                 }
             },
+            /**
+             * 最后的结果
+             */
+            result: function() {
+                const data = {};
+                this.questions.forEach(function(question) {
+                    data[question.id] = question.result;
+                });
+                return data;
+            },
+            /**
+             * 所有的required要求，默认没有要求
+             */
+            required() {
+                const vm = this;
+
+                const required = {};
+                for (let i = 0, len = vm.questions.length; i < len; i++) {
+                    const question = vm.questions[i];
+                    required[question.id] = Boolean(question.meta.isRequired);
+                }
+
+                console.log(vm.requiredCondition);
+
+                // 当前的数据结果
+                vm.requiredCondition.forEach(function(condition) {
+                    switch (condition.type) {
+                    case 'equal':
+                        // 处理break
+                        if (vm.result[condition.key] === condition.value) {
+                            // 条件成立
+                            required[condition.id] = condition.isRequired;
+                        }
+                        break;
+                    }
+                });
+
+                console.log(required);
+                return required;
+            },
         },
         watch: {
             watchCount: function(val) {
                 this.isComplete;
             },
+        },
+        mounted() {
+            console.log(this.required);
         },
         methods: {
             onUpdate: function(patch) {
@@ -202,11 +274,7 @@
             },
             onClickSubmit: function() {
                 if (!this.disableSubmit && this.isComplete) {
-                    const data = {};
-                    this.questions.forEach(function(question) {
-                        data[question.id] = question.result;
-                    });
-                    this.$emit('submit', data);
+                    this.$emit('submit', this.result);
                 }
             },
             onWarn: function() {

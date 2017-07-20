@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -538,7 +538,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 
-var _wx = __webpack_require__(16);
+var _wx = __webpack_require__(15);
 
 var _install = __webpack_require__(2);
 
@@ -661,7 +661,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _utils = __webpack_require__(1);
 
-var _address = __webpack_require__(15);
+var _address = __webpack_require__(14);
 
 var _address2 = _interopRequireDefault(_address);
 
@@ -1145,6 +1145,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _install = __webpack_require__(2);
+
 var _mobileButton = __webpack_require__(5);
 
 var _mobileButton2 = _interopRequireDefault(_mobileButton);
@@ -1169,7 +1171,7 @@ var _textarea = __webpack_require__(25);
 
 var _textarea2 = _interopRequireDefault(_textarea);
 
-var _uploader = __webpack_require__(26);
+var _uploader = __webpack_require__(16);
 
 var _uploader2 = _interopRequireDefault(_uploader);
 
@@ -1187,68 +1189,6 @@ var _input2 = _interopRequireDefault(_input);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-// import Vue from 'vue';
 exports.default = {
     name: 'ROQuestionnaire',
     components: {
@@ -1264,37 +1204,54 @@ exports.default = {
         MobileButton: _mobileButton2.default
     },
     props: {
-        // banner链接
+        /**
+         * banner链接，存在的情况下，将显示头部banner
+         */
         banner: {
             type: String
         },
-        // 问卷数据
+        /**
+         * 问卷数据
+         */
         questions: {
             type: Array,
             default: function _default() {
                 return [];
             }
         },
-        // 是否禁止提交
+        /**
+         * 是否禁止提交
+         */
         disableSubmit: {
             type: Boolean,
             default: false
         },
-        // 禁止提交时显示文本
+        /**
+         * 禁止提交时显示文本
+         */
         disableHint: {
             type: String,
             default: ''
         },
-        // 允许提交文本
+        /**
+         * 允许提交文本
+         */
         allowHint: {
             type: String,
             default: '提交'
         },
-        // 提醒填写文本
+        /**
+         * 提醒填写文本
+         */
         fillHint: {
             type: String,
             default: '未填写完整'
         },
+        /**
+         * 需要统一的颜色，将应用在
+         *  ROChoice
+         *  ROMultipleChoice
+         */
         color: {
             required: true,
             type: String
@@ -1306,6 +1263,15 @@ exports.default = {
             type: String,
             default: function _default() {
                 return '';
+            }
+        },
+        /**
+         * 要求检查的required，包含类型 {type: 'equal', key, value}
+         */
+        requiredCondition: {
+            type: Array,
+            default: function _default() {
+                return [];
             }
         }
     },
@@ -1320,6 +1286,7 @@ exports.default = {
         };
     },
     computed: {
+        // 是否必填都已经填写完成
         isComplete: function isComplete() {
             console.log('in isComplete', this.warnCount);
             if (this.warnCount > 0) {
@@ -1328,9 +1295,9 @@ exports.default = {
             var result = true;
             for (var i = 0, len = this.questions.length; i < len; i++) {
                 var question = this.questions[i];
-                var meta = question.meta || {};
                 var qResult = question.result;
-                if (meta.isRequired && (qResult === '' || qResult === null || Object.prototype.toString.call(qResult) === '[object Array]' && qResult.length === 0)) {
+                var isRequired = this.required[question.id];
+                if (isRequired && (qResult === '' || qResult === null || Object.prototype.toString.call(qResult) === '[object Array]' && qResult.length === 0)) {
                     result = false;
                     break;
                 }
@@ -1347,6 +1314,46 @@ exports.default = {
             } else {
                 return this.fillHint;
             }
+        },
+        /**
+         * 最后的结果
+         */
+        result: function result() {
+            var data = {};
+            this.questions.forEach(function (question) {
+                data[question.id] = question.result;
+            });
+            return data;
+        },
+        /**
+         * 所有的required要求，默认没有要求
+         */
+        required: function required() {
+            var vm = this;
+
+            var required = {};
+            for (var i = 0, len = vm.questions.length; i < len; i++) {
+                var question = vm.questions[i];
+                required[question.id] = Boolean(question.meta.isRequired);
+            }
+
+            console.log(vm.requiredCondition);
+
+            // 当前的数据结果
+            vm.requiredCondition.forEach(function (condition) {
+                switch (condition.type) {
+                    case 'equal':
+                        // 处理break
+                        if (vm.result[condition.key] === condition.value) {
+                            // 条件成立
+                            required[condition.id] = condition.isRequired;
+                        }
+                        break;
+                }
+            });
+
+            console.log(required);
+            return required;
         }
     },
     watch: {
@@ -1354,6 +1361,10 @@ exports.default = {
             this.isComplete;
         }
     },
+    mounted: function mounted() {
+        console.log(this.required);
+    },
+
     methods: {
         onUpdate: function onUpdate(patch) {
             for (var i = 0, len = this.questions.length; i < len; i++) {
@@ -1381,11 +1392,7 @@ exports.default = {
         },
         onClickSubmit: function onClickSubmit() {
             if (!this.disableSubmit && this.isComplete) {
-                var data = {};
-                this.questions.forEach(function (question) {
-                    data[question.id] = question.result;
-                });
-                this.$emit('submit', data);
+                this.$emit('submit', this.result);
             }
         },
         onWarn: function onWarn() {
@@ -1422,7 +1429,66 @@ exports.default = {
             return true;
         }
     }
-};
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /***/ }),
 /* 11 */
@@ -1620,126 +1686,6 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _utils = __webpack_require__(1);
-
-exports.default = {
-    name: 'ROUploader',
-    props: {
-        id: {
-            required: true,
-            type: String
-        },
-        /**
-         * - size 允许的最大数量，默认为1
-         */
-        source: {
-            type: Object,
-            default: function _default() {
-                return {
-                    size: 1
-                };
-            }
-        },
-        result: {
-            type: String // 输出的数据是一个string
-        }
-    },
-    computed: {
-        /**
-         * 当前已经上传的图片的数量
-         */
-        imageCount: function imageCount() {
-            return this.count;
-        },
-
-        /**
-         * 总的可以上传的图片数量
-         */
-        imageSize: function imageSize() {
-            return this.source.size;
-        }
-    },
-    data: function data() {
-        return {
-            // 当前已经上传的图片数量
-            count: 0
-        };
-    },
-
-    methods: {
-        /**
-         * 当新图片添加时触发，将serverId发送出去
-         */
-        onAdd: function onAdd(_ref) {
-            var serverId = _ref.serverId;
-
-            this.count++;
-            this.$emit('item', {
-                id: this.id,
-                result: serverId
-            });
-        },
-
-        /**
-         * 当图片被删除时触发
-         */
-        onRemove: function onRemove() {
-            this.count--;
-            this.$emit('item', {
-                id: this.id,
-                result: null
-            });
-        },
-
-        /**
-         * 统一更新image
-         */
-        updateImage: function updateImage(val) {
-            if (!(0, _utils.isUndef)(val) && val.indexOf('http') === 0) {
-                this.$refs.uploader.removeAll();
-                this.$refs.uploader.add(val, null);
-            }
-        }
-    },
-    mounted: function mounted() {
-        this.updateImage(this.result);
-    },
-
-    watch: {
-        // 为了让result同步
-        '$props.result': function $propsResult(val) {
-            this.updateImage(val);
-        }
-    }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
@@ -1750,7 +1696,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3873,7 +3819,7 @@ exports.default = [{
 }];
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3919,6 +3865,146 @@ function getLocation() {
         });
     });
 }
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _utils = __webpack_require__(1);
+
+exports.default = {
+    name: 'ROUploader',
+    props: {
+        id: {
+            required: true,
+            type: String
+        },
+        /**
+         * - size 允许的最大数量，默认为1
+         */
+        source: {
+            type: Object,
+            default: function _default() {
+                return {
+                    size: 1
+                };
+            }
+        },
+        result: {
+            type: String // 输出的数据是一个string
+        }
+    },
+    computed: {
+        /**
+         * 当前已经上传的图片的数量
+         */
+        imageCount: function imageCount() {
+            return this.count;
+        },
+
+        /**
+         * 总的可以上传的图片数量
+         */
+        imageSize: function imageSize() {
+            return this.source.size;
+        }
+    },
+    data: function data() {
+        return {
+            // 当前已经上传的图片数量
+            count: 0
+        };
+    },
+
+    methods: {
+        /**
+         * 当新图片添加时触发，将serverId发送出去
+         */
+        onAdd: function onAdd(_ref) {
+            var serverId = _ref.serverId;
+
+            this.count++;
+            this.$emit('item', {
+                id: this.id,
+                result: serverId
+            });
+        },
+
+        /**
+         * 当图片被删除时触发
+         */
+        onRemove: function onRemove() {
+            this.count--;
+            this.$emit('item', {
+                id: this.id,
+                result: null
+            });
+        },
+
+        /**
+         * 统一更新image
+         */
+        updateImage: function updateImage(val) {
+            if (!(0, _utils.isUndef)(val) && val.indexOf('http') === 0) {
+                this.$refs.uploader.removeAll();
+                this.$refs.uploader.add(val, null);
+            }
+        }
+    },
+    mounted: function mounted() {
+        this.updateImage(this.result);
+    },
+
+    watch: {
+        // 为了让result同步
+        '$props.result': function $propsResult(val) {
+            this.updateImage(val);
+        }
+    },
+    render: function render(h) {
+        var bd = h('div', {
+            'class': ['weui-cell__bd']
+        }, [h('WechatUploader', {
+            ref: 'uploader',
+            props: {
+                size: this.source.size
+            },
+            on: {
+                add: this.onAdd,
+                remove: this.onRemove
+            }
+        }), h('div', {
+            'class': ['weui-textarea-counter']
+        }, [h('span', {}, this.imageCount), '/' + this.imageSize])]);
+        return h('div', {
+            'class': ['weui-cells']
+        }, [h('div', {
+            'class': ['weui-cell']
+        }, [bd])]);
+    }
+}; // <template>
+//     <div class="weui-cells">
+//         <div class="weui-cell">
+//             <div class="weui-cell__bd">
+//                 <WechatUploader
+//                     ref="uploader"
+//                     :size="source.size"
+//                     @add="onAdd"
+//                     @remove="onRemove"
+//                 >
+//                 </WechatUploader>
+//                 <div class="weui-textarea-counter"><span>{{imageCount}}</span>/{{imageSize}}</div>
+//             </div>
+//         </div>
+//     </div>
+// </template>
 
 /***/ }),
 /* 17 */
@@ -4024,7 +4110,7 @@ var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(6),
   /* template */
-  __webpack_require__(28),
+  __webpack_require__(27),
   /* styles */
   null,
   /* scopeId */
@@ -4044,7 +4130,7 @@ var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(7),
   /* template */
-  __webpack_require__(30),
+  __webpack_require__(29),
   /* styles */
   null,
   /* scopeId */
@@ -4064,7 +4150,7 @@ var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(8),
   /* template */
-  __webpack_require__(32),
+  __webpack_require__(30),
   /* styles */
   null,
   /* scopeId */
@@ -4084,7 +4170,7 @@ var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(9),
   /* template */
-  __webpack_require__(27),
+  __webpack_require__(26),
   /* styles */
   null,
   /* scopeId */
@@ -4101,13 +4187,13 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 function injectStyle (ssrContext) {
-  __webpack_require__(35)
+  __webpack_require__(33)
 }
 var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(10),
   /* template */
-  __webpack_require__(29),
+  __webpack_require__(28),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -4127,7 +4213,7 @@ var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(11),
   /* template */
-  __webpack_require__(33),
+  __webpack_require__(31),
   /* styles */
   null,
   /* scopeId */
@@ -4147,7 +4233,7 @@ var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(12),
   /* template */
-  __webpack_require__(34),
+  __webpack_require__(32),
   /* styles */
   null,
   /* scopeId */
@@ -4161,26 +4247,6 @@ module.exports = Component.exports
 
 /***/ }),
 /* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(0)(
-  /* script */
-  __webpack_require__(13),
-  /* template */
-  __webpack_require__(31),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 27 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4250,7 +4316,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4290,7 +4356,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4321,7 +4387,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "ro-question"
     }, [_c('div', {
       staticClass: "weui-cells__title"
-    }, [_vm._v("\n            " + _vm._s(index + 1) + "." + _vm._s(question.caption)), (question.meta && question.meta.isRequired) ? _c('span', {
+    }, [_vm._v("\n            " + _vm._s(index + 1) + "." + _vm._s(question.caption)), (_vm.required[question.id]) ? _c('span', {
       staticClass: "ro-required-tag"
     }) : _vm._e()]), _vm._v(" "), _c(question.type, {
       tag: "component",
@@ -4389,7 +4455,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 }]}
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4451,32 +4517,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "weui-cells"
-  }, [_c('div', {
-    staticClass: "weui-cell"
-  }, [_c('div', {
-    staticClass: "weui-cell__bd"
-  }, [_c('WechatUploader', {
-    ref: "uploader",
-    attrs: {
-      "size": _vm.source.size
-    },
-    on: {
-      "add": _vm.onAdd,
-      "remove": _vm.onRemove
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "weui-textarea-counter"
-  }, [_c('span', [_vm._v(_vm._s(_vm.imageCount))]), _vm._v("/" + _vm._s(_vm.imageSize))])], 1)])])
-},staticRenderFns: []}
-
-/***/ }),
-/* 32 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4537,7 +4578,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 33 */
+/* 31 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4598,7 +4639,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 34 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -4635,7 +4676,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 },staticRenderFns: []}
 
 /***/ }),
-/* 35 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -4645,10 +4686,10 @@ var content = __webpack_require__(17);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(36)("30a9aa3a", content, true);
+var update = __webpack_require__(34)("30a9aa3a", content, true);
 
 /***/ }),
-/* 36 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4667,7 +4708,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(37)
+var listToStyles = __webpack_require__(35)
 
 /*
 type StyleObject = {
@@ -4869,7 +4910,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 37 */
+/* 35 */
 /***/ (function(module, exports) {
 
 /**
