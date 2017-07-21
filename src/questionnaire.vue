@@ -72,6 +72,7 @@
     import RODatePicker from './datePicker.vue';
     import ROSelect from './select.vue';
     import ROInput from './input.vue';
+    import ROSegment from './segment.vue';
     export default {
         name: 'ROQuestionnaire',
         components: {
@@ -84,6 +85,7 @@
             RODatePicker,
             ROSelect,
             ROInput,
+            ROSegment,
             MobileButton,
         },
         props: {
