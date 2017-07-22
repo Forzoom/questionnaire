@@ -219,10 +219,8 @@
                 const required = {};
                 for (let i = 0, len = vm.questions.length; i < len; i++) {
                     const question = vm.questions[i];
-                    required[question.id] = Boolean(question.meta.isRequired);
+                    required[question.id] = question.meta ? Boolean(question.meta.isRequired) : false;
                 }
-
-                console.log(vm.requiredCondition);
 
                 // 当前的数据结果
                 vm.requiredCondition.forEach(function(condition) {
