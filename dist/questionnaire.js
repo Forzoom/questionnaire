@@ -212,11 +212,11 @@ var _questionnaire = __webpack_require__(26);
 
 var _questionnaire2 = _interopRequireDefault(_questionnaire);
 
-var _choice = __webpack_require__(3);
+var _choice = __webpack_require__(4);
 
 var _choice2 = _interopRequireDefault(_choice);
 
-var _multipleChoice = __webpack_require__(4);
+var _multipleChoice = __webpack_require__(5);
 
 var _multipleChoice2 = _interopRequireDefault(_multipleChoice);
 
@@ -246,6 +246,12 @@ function install(Vue, options) {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports["mobile-button"]=e():t["mobile-button"]=e()}(this,function(){return function(t){function e(o){if(n[o])return n[o].exports;var r=n[o]={i:o,l:!1,exports:{}};return t[o].call(r.exports,r,r.exports,e),r.l=!0,r.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,o){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:o})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=0)}([function(t,e,n){"use strict";function o(t){if(Array.isArray(t)){for(var e=0,n=Array(t.length);e<t.length;e++)n[e]=t[e];return n}return Array.from(t)}Object.defineProperty(e,"__esModule",{value:!0});var r=function(t){return null===t||void 0===t};e.default={name:"MobileButton",props:{id:{type:String},name:{type:String},classList:{type:Array},tag:String,to:String,isSelected:{type:Boolean,default:!1},isDisabled:{type:Boolean,default:!1},isBlock:{type:Boolean,default:!1}},render:function(t){var e=this,n=["btn","btn-mobile",r(e.name)?null:"btn-"+e.name].concat(o(e.classList||[]),[e.isDisabled?"disabled":null,e.isSelected?"selected":null,e.isBlock?"btn-block":null]),i=r(e.tag)?"a":e.tag,l=r(e.id)?{}:{id:e.id},u={};return r(e.to)||("router-link"===i?u.to=e.to:"a"===i&&(l.href=e.to)),t(i,{class:n,props:u,domProps:l,on:{click:function(){e.isDisabled||e.$emit("click")}}},e.$slots.default)}}}])});
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -372,7 +378,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +514,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /*
@@ -590,7 +596,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -809,12 +815,6 @@ function applyToTag (styleElement, obj) {
   }
 }
 
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-!function(t,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports["mobile-button"]=e():t["mobile-button"]=e()}(this,function(){return function(t){function e(o){if(n[o])return n[o].exports;var r=n[o]={i:o,l:!1,exports:{}};return t[o].call(r.exports,r,r.exports,e),r.l=!0,r.exports}var n={};return e.m=t,e.c=n,e.i=function(t){return t},e.d=function(t,n,o){e.o(t,n)||Object.defineProperty(t,n,{configurable:!1,enumerable:!0,get:o})},e.n=function(t){var n=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=0)}([function(t,e,n){"use strict";function o(t){if(Array.isArray(t)){for(var e=0,n=Array(t.length);e<t.length;e++)n[e]=t[e];return n}return Array.from(t)}Object.defineProperty(e,"__esModule",{value:!0});var r=function(t){return null===t||void 0===t};e.default={name:"MobileButton",props:{id:{type:String},name:{type:String},classList:{type:Array},tag:null,to:null,isDisabled:{type:Boolean,default:!1},isBlock:{type:Boolean,default:!1}},render:function(t){var e=this,n=["btn","btn-mobile",r(e.name)?null:"btn-"+e.name].concat(o(e.classList||[]),[e.isDisabled?"disabled":null,e.isBlock?"btn-block":null]),i=r(e.tag)?"a":e.tag,l=r(e.id)?{}:{id:e.id},u={};return r(e.to)||("router-link"===i?u.to=e.to:"a"===i&&(l.href=e.to)),t(i,{class:n,domProps:l,on:{click:function(){e.isDisabled||e.$emit("click")}}},e.$slots.default)}}}])});
 
 /***/ }),
 /* 8 */
@@ -1450,15 +1450,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _install = __webpack_require__(2);
 
-var _mobileButton = __webpack_require__(7);
+var _mobileButton = __webpack_require__(3);
 
 var _mobileButton2 = _interopRequireDefault(_mobileButton);
 
-var _choice = __webpack_require__(3);
+var _choice = __webpack_require__(4);
 
 var _choice2 = _interopRequireDefault(_choice);
 
-var _multipleChoice = __webpack_require__(4);
+var _multipleChoice = __webpack_require__(5);
 
 var _multipleChoice2 = _interopRequireDefault(_multipleChoice);
 
@@ -1808,21 +1808,12 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+var _mobileButton = __webpack_require__(3);
+
+var _mobileButton2 = _interopRequireDefault(_mobileButton);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * 类似于radio
@@ -1831,6 +1822,9 @@ Object.defineProperty(exports, "__esModule", {
  */
 exports.default = {
     name: 'ROSegment',
+    components: {
+        MobileButton: _mobileButton2.default
+    },
     props: {
         id: {
             required: true,
@@ -1904,7 +1898,21 @@ exports.default = {
             }
         }
     }
-};
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /***/ }),
 /* 14 */
@@ -2102,13 +2110,13 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _install = __webpack_require__(2);
 
 exports.default = {
-  install: _install.install
+    install: _install.install
 };
 
 /***/ }),
@@ -4426,7 +4434,7 @@ exports.default = {
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(5)(undefined);
+exports = module.exports = __webpack_require__(6)(undefined);
 // imports
 
 
@@ -4440,12 +4448,12 @@ exports.push([module.i, ".ro-questions{background-color:#f8f8f8;padding-top:1px}
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(5)(undefined);
+exports = module.exports = __webpack_require__(6)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, ".ro-segment-item{float:left;text-align:center}", ""]);
+exports.push([module.i, ".ro-segment-item{position:relative;text-align:center}.ro-segment-item:after{content:\"\";display:inline-block;position:absolute;top:0;right:0;bottom:0;width:1px;border-right:1px solid #e5e5e5;transform:scaleX(.5)}.ro-segment-item:last-child:after{display:none}.btn.btn-mobile.btn-ro-questionnaire-segment{color:#3c3c3c;background-color:#fff;transition:background-color .2s;user-select:none;cursor:pointer}.btn.btn-mobile.btn-ro-questionnaire-segment:hover,.btn.btn-mobile.btn-ro-questionnaire-segment:link,.btn.btn-mobile.btn-ro-questionnaire-segment:visited{color:#3c3c3c;background-color:#fff;text-decoration:none}.btn.btn-mobile.btn-ro-questionnaire-segment.active,.btn.btn-mobile.btn-ro-questionnaire-segment.disabled,.btn.btn-mobile.btn-ro-questionnaire-segment:active,.btn.btn-mobile.btn-ro-questionnaire-segment:disabled{color:#3c3c3c;background-color:#e5e5e5}", ""]);
 
 // exports
 
@@ -4897,12 +4905,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "weui-cell"
   }, _vm._l((_vm.source), function(item) {
-    return _c('div', {
+    return _c('MobileButton', {
       staticClass: "ro-segment-item",
       style: ({
         color: item.value == _vm.val ? _vm.color : 'rgba(53,53,53,1)',
         width: (100 / _vm.rowCount) + '%'
       }),
+      attrs: {
+        "name": "ro-questionnaire-segment"
+      },
       on: {
         "click": function($event) {
           _vm.onClickItem(item.value)
@@ -5082,7 +5093,7 @@ var content = __webpack_require__(20);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(6)("30a9aa3a", content, true);
+var update = __webpack_require__(7)("30a9aa3a", content, true);
 
 /***/ }),
 /* 39 */
@@ -5095,7 +5106,7 @@ var content = __webpack_require__(21);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(6)("3ab80824", content, true);
+var update = __webpack_require__(7)("2fb0891a", content, true);
 
 /***/ }),
 /* 40 */

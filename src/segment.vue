@@ -1,19 +1,20 @@
 <template>
     <div class="weui-cells">
         <div class="weui-cell">
-            <div
+            <MobileButton
                 v-for="item in source"
+                name="ro-questionnaire-segment"
                 class="ro-segment-item"
                 :style="{color: item.value == val ? color : 'rgba(53,53,53,1)', width: (100 / rowCount) + '%'}"
-                @click="onClickItem(item.value)"
-            >
+                @click="onClickItem(item.value)">
                 {{item.text}}
-            </div>
+            </MobileButton>
         </div>
     </div>
 </template>
 
 <script>
+    import MobileButton from '@forzoom/mobile-button';
     /**
      * 类似于radio
      *
@@ -21,6 +22,9 @@
      */
     export default {
         name: 'ROSegment',
+        components: {
+            MobileButton,
+        },
         props: {
             id: {
                 required: true,
@@ -96,9 +100,34 @@
     };
 </script>
 
-<style>
+<style lang="less">
+    @import "./style/mixins.less";
     .ro-segment-item {
-        float: left;
+        position: relative;
         text-align: center;
     }
+    .ro-segment-item:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 1px;
+        border-right: 1px solid #e5e5e5;
+        transform: scaleX(0.5);
+    }
+    .ro-segment-item:last-child:after {
+        display: none;
+    }
+    #btn-mobile(
+        custom,
+        ro-questionnaire-segment,
+        @first-font-color,
+        @first-font-color,
+        @first-font-color,
+        #fff,
+        #e5e5e5,
+        #e5e5e5
+    );
 </style>

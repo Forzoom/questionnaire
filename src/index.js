@@ -3,5 +3,5 @@ import {
 } from './install.js';
 
 export default {
-	install,
+    install,
 };

@@ -1,0 +1,96 @@
+
+// 使用dark和light来表示
+// 默认的lighten和darken
+#btn-mobile(default, @name, @color, @bg) {
+    #btn-mobile(
+        custom,
+        @name,
+        @color,
+        @color,
+        lighten(@color, 20%),
+        @bg,
+        darken(@bg, 20%),
+        @bg,
+    );
+}
+// 为了在mobile上能够拥有正常样式
+// 在移动端上hover会被一直触发
+#btn-mobile(custom, @name, @color, @active-color, @disabled-color, @bg, @active-bg, @disabled-bg) {
+    &.btn.btn-mobile.btn-@{name} {
+        color: @color;
+        background-color: @bg;
+        transition: background-color 0.2s; // 0.2s是比较好的选择
+        user-select: none; // 在vibe shot下仍旧可以触发系统菜单
+        cursor: pointer;
+        &:link,
+        &:visited,
+        &:hover {
+            color: @color;
+            background-color: @bg;
+            text-decoration: none;
+        }
+        .active(@active-color, @bg, @active-bg);
+        .disabled(@disabled-color, @bg, @disabled-bg);
+    }
+}
+
+// 在pc上的内容，或者是出现selected/.active这些内容的时候
+// 为了兼容selected/active的效果，可能还需要分出一个内容，
+// 因为在pc上hover的颜色可能相对较深，但是为了使用selected，hover需要设置成和active相同的效果
+// 暂时不使用这个
+#btn(custom, @name, @color, @active-color, @disabled-color, @bg, @active-bg, @disabled-bg) {
+    &.btn.btn-@{name} {
+        color: @color;
+        background-color: @bg;
+        transition: background-color 0.2s; // 0.2s是比较好的选择
+        &:link,
+        &:visited {
+            color: @color;
+            background-color: @bg;
+            text-decoration: none;
+        }
+        &:hover {
+            color: @active-color;
+            background-color: @active-bg;
+            text-decoration: none;
+        }
+        .active(@active-color, @bg, @active-bg);
+        .disabled(@disabled-color, @bg, @disabled-bg);
+    }
+}
+
+// 设置按钮active相关的样式
+// @color color内容
+// @bg-base 可以缺少bg-base
+// @bg 可以是dark/light
+.active(@color, @bg-base, @bg) when (iscolor(@bg)) {
+    &:active,
+    &.active, {
+        color: @color;
+        background-color: @bg;
+    }
+}
+.active(@color, @bg-base, @level) when (@level = dark) {
+    .active(@color, @bg-base, darken(@bg-base, 10%));
+}
+.active(@color, @bg-base, @level) when (@level = light) {
+    .active(@color, @bg-base, lighten(@bg-base, 10%));
+}
+
+// 设置按钮disabled相关的样式
+// @color color
+// @bg-base
+// @bg
+.disabled(@color, @bg-base, @bg) when (iscolor(@bg)) {
+    &:disabled,
+    &.disabled, {
+        color: @color;
+        background-color: @bg;
+    }
+}
+.disabled(@color, @bg-base, @level) when (@level = dark) {
+    .disabled(@color, @bg-base, darken(@bg-base, 10%));
+}
+.disabled(@color, @bg-base, @level) when (@level = light) {
+    .disabled(@color, @bg-base, lighten(@bg-base, 10%));
+}

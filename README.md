@@ -75,3 +75,7 @@ normalize-weui不再对颜色进行处理
 
 1. 允许使用requiredCondition
 2. 优化uploader代码
+
+#### 0.0.47
+
+1. 添加mixins，优化segment样式
