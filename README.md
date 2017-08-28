@@ -79,3 +79,7 @@ normalize-weui不再对颜色进行处理
 #### 0.0.47
 
 1. 添加mixins，优化segment样式
+
+#### 0.0.49
+
+1. 更新mobile-button版本
