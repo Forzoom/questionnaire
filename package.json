@@ -1,6 +1,6 @@
 {
   "name": "@forzoom/questionnaire",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "questionnaire",
   "main": "dist/questionnaire.min.js",
   "scripts": {
@@ -35,7 +35,7 @@
     "url": "git+https://github.com/Forzoom/questionnaire.git"
   },
   "dependencies": {
-    "@forzoom/mobile-button": "0.0.4",
+    "@forzoom/mobile-button": "0.0.8",
     "@forzoom/uploader": "0.0.11",
     "weui": "^1.1.2"
   }
