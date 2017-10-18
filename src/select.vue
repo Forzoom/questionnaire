@@ -2,15 +2,12 @@
     <div class="weui-cells">
         <div class="weui-cell">
             <div class="weui-cell__bd">
-                <div :class="['ro-text-view', {placeholder: result === null || typeof result === 'undefined'}]" @click="onClick">{{result | placeholder(source.placeholder)}}</div>
+                <div :class="['ro-text-view', {placeholder: currentValue === null || typeof currentValue === 'undefined'}]">{{map[currentValue] | placeholder(source.placeholder)}}</div>
+                <select class="ro-select" v-model="currentValue">
+                    <option v-for="(item, index) in source.slots" :key="index" :value="item.value">{{item.text}}</option>
+                </select>
             </div>
         </div>
-        <mt-popup v-model="visible" position="bottom" class="mint-datetime">
-            <mt-picker :slots="generatedSlots" @change="onValueChange" ref="picker" :show-toolbar="true" :item-height="itemHeight">
-                <span class="mint-datetime-action mint-datetime-cancel" @click="visible = false;$emit('cancel')" @touchstart="visible = false;$emit('cancel')">{{ cancelText }}</span>
-                <span class="mint-datetime-action mint-datetime-confirm" @click="onConfirm" @touchstart="onConfirm">{{ confirmText }}</span>
-            </mt-picker>
-        </mt-popup>
     </div>
 </template>
 
@@ -18,6 +15,9 @@
     import {
         placeholder,
     } from './lib/utils';
+    /**
+     * 选择
+     */
     export default {
         name: 'ROSelect',
         props: {
@@ -29,81 +29,66 @@
                 type: Object,
                 default: function() {
                     return {
-                        slots: [],
-                        placeholder: '', // 
+                        slots: [], // 所有的显示内容
+                        placeholder: '', // 默认的显示内容
                     };
                 },
             },
+            // 最终的输出
             result: {
                 type: String, // 输出的数据是一个string
+                default: 'pppp',
             },
         },
         data: function() {
             return {
-                visible: false, // 是否显示
-                cancelText: '取消', // 
-                confirmText: '确定',
                 currentValue: '', // 当前页面上显示的内容
             };
         },
         computed: {
-            generatedSlots: function() {
-                return [{
-                    flex: 1,
-                    values: this.source.slots,
-                }];
-            },
-            itemHeight: function() {
-                return 36 * (window.devicePixelRatio || 1);
-            },
-        },
-        watch: {
-            visible: function(visible) {
-                if (visible) {
-                    this.$emit('background');
-                } else {
-                    this.$emit('foreground');
-                }
+            map() {
+                const result = {};
+                this.source.slots.forEach(slot => {
+                    result[slot.value] = slot.text;
+                });
+                return result;
             },
         },
         filters: {
             placeholder,
         },
-        methods: {
+        watch: {
             /**
-             * @param picker picker对象
-             * @param value 各个slots中的数据
+             * 更新数据
              */
-            onValueChange: function(picker, values) {
-                this.currentValue = values[0]
-            },
-            onClick: function() {
-                this.open();
-            },
-            onClickContainer: function() {
-                this.close();
+            '$props.result': function() {
+                this.currentValue = this.result;
             },
             /**
+             * 发生变化需要通知外界
              */
-            onConfirm: function() {
+            currentValue(val) {
                 this.$emit('item', {
                     id: this.id,
-                    result: this.currentValue,
+                    result: val,
                 });
-                this.close();
-            },
-            open: function() {
-                // this.$refs.picker.open();
-                this.visible = true;
-            },
-            close: function() {
-                this.visible = false;
             },
         },
-        mounted: function() {
-            this.$nextTick(() => {
-                this.$refs.picker.setSlotValue(0, this.source.slots[0]);
-            });
+        created() {
+            this.currentValue = this.result;
         },
     };
 </script>
+
+<style lang="less">
+    .ro-select {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+</style>

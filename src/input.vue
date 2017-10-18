@@ -19,6 +19,9 @@
 </template>
 
 <script>
+    /**
+     * 内容输入
+     */
     export default {
         name: 'ROInput',
         props: {

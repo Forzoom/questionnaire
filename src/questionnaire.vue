@@ -253,7 +253,7 @@
                     const question = this.questions[i];
                     if (question.id === patch.id) {
                         if ('production' !== process.env.NODE_ENV) {
-                            console.log(question.id, patch.result);
+                            console.log('onUpdate', question.id, patch.result);
                         }
                         question.result = patch.result;
                         break;
