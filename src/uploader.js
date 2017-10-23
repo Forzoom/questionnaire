@@ -37,7 +37,7 @@ export default {
             },
         },
         result: {
-            type: String, // 输出的数据是一个string
+            type: Array, // [{ image, serverId, }]
         },
     },
     computed: {
@@ -64,31 +64,32 @@ export default {
         /**
          * 当新图片添加时触发，将serverId发送出去
          */
-        onAdd({ serverId, }) {
-            this.count++;
+        onAdd() {
+            const images = this.$refs.uploader.getImages();
+            this.count = images.length;
             this.$emit('item', {
                 id: this.id,
-                result: serverId,
+                result: images,
             });
         },
         /**
          * 当图片被删除时触发
          */
         onRemove() {
-            this.count--;
+            const images = this.$refs.uploader.getImages();
+            this.count = images.length;
             this.$emit('item', {
                 id: this.id,
-                result: null,
+                result: images,
             });
         },
         /**
          * 统一更新image
+         *
+         * @param {Array<{image, serverId}> images
          */
-        updateImage(val) {
-            if (!isUndef(val) && val.indexOf('http') === 0) {
-                this.$refs.uploader.removeAll();
-                this.$refs.uploader.add(val, null);
-            }
+        updateImage(images) {
+            this.$refs.uploader.setImages(images);
         }
     },
     mounted() {

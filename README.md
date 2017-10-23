@@ -22,6 +22,10 @@ normalize-weui不再对颜色进行处理
 
 1. 改为插件嵌入方式
 
+#### v0.0.50
+
+1. 修改Select的样式，使用原生<select>
+
 ### Version
 
 #### v0.0.32
@@ -76,10 +80,18 @@ normalize-weui不再对颜色进行处理
 1. 允许使用requiredCondition
 2. 优化uploader代码
 
-#### 0.0.47
+#### v0.0.47
 
 1. 添加mixins，优化segment样式
 
-#### 0.0.49
+#### v0.0.49
 
 1. 更新mobile-button版本
+
+#### v0.0.50
+
+1. 修改Select的样式，使用原生<select>
+
+#### v0.0.51
+
+1. 修改uploader的result逻辑，将string修改为array
