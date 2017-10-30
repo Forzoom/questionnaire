@@ -95,3 +95,7 @@ normalize-weui不再对颜色进行处理
 #### v0.0.51
 
 1. 修改uploader的result逻辑，将string修改为array
+
+#### v.0.0.52
+
+1. 修复uploader组件的错误

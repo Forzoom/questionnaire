@@ -89,6 +89,7 @@ export default {
          * @param {Array<{image, serverId}> images
          */
         updateImage(images) {
+            this.count = images.length;
             this.$refs.uploader.setImages(images);
         }
     },
