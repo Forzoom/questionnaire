@@ -31,6 +31,10 @@ normalize-weui不再对颜色进行处理
 1. 删除DatePicker和AddressPicker，使用Placeholder组件替代
 1. 点击Placeholder组件，将触发 @click(id) 事件
 
+#### v0.0.55
+
+1. Placeholder接收source.text作为数据显示，删除无用代码
+
 
 ### Version
 
@@ -110,3 +114,11 @@ normalize-weui不再对颜色进行处理
 
 1. 删除DatePicker和AddressPicker，使用Placeholder组件替代
 1. 点击Placeholder组件，将触发 @click(id) 事件
+
+#### v0.0.54
+
+1. 删除了Placeholder中的result类型限制
+
+#### v0.0.55
+
+1. Placeholder接收source.text作为数据显示，删除无用代码

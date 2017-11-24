@@ -2,7 +2,7 @@
     <div class="weui-cells">
         <div class="weui-cell">
             <div class="weui-cell__bd">
-                <div :class="['ro-text-view', {placeholder: result === null || typeof result === 'undefined'}]" @click="onClick">{{result | placeholder(source.placeholder)}}</div>
+                <div :class="['ro-text-view', {placeholder: result === null || typeof result === 'undefined'}]" @click="onClick">{{source.text | placeholder(source.placeholder, '')}}</div>
             </div>
         </div>
     </div>
@@ -27,32 +27,12 @@
                 type: Object,
                 default: function() {
                     return {
-                        placeholder: '', // 默认显示提示内容
-                        date: new Date(),
+                        placeholder: '', // 提示内容
+                        text: '', // 显示的文本内容
                     };
                 },
             },
-            result: {
-                type: String, // 输出的数据是一个string
-            },
-        },
-        data: function() {
-            return {
-                /**
-                 * 当前页面上显示的内容
-                 */
-                currentValue: null,
-            };
-        },
-        watch: {
-            /**
-             * 检查变化
-             */
-            '$props.result': function(val) {
-                if (val !== this.currentValue) {
-                    this.currentValue = val;
-                }
-            },
+            result: {},
         },
         filters: {
             placeholder,

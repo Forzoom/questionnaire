@@ -1,5 +1,5 @@
-export function placeholder(val, placeholder = '') {
-    return isUndef(val) ? placeholder : val;
+export function placeholder(val, placeholder = '', equal) {
+    return (isUndef(val) || val === equal) ? placeholder : val;
 }
 
 export function isUndef(val) {
