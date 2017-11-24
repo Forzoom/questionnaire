@@ -3,8 +3,7 @@
         <div class="ro-question-banner-wrap" v-if="banner" 
             @touchstart="noWhenBackground($event)"
             @touchmove="noWhenBackground($event)"
-            @touchend="noWhenBackground($event)"
-        >
+            @touchend="noWhenBackground($event)">
             <img class="ro-question-banner" :src="banner" />
         </div>
         <div class="ro-question" :key="question.id" v-for="(question, index) in questions">
@@ -17,7 +16,7 @@
                 :source="question.source"
                 :result="question.result" 
                 :color="color"
-                @item="onUpdate"
+                @item="setResult"
                 @load="onStartLoad"
                 @finish="onFinishLoad"
                 @background="onBackground"
@@ -25,7 +24,7 @@
                 @warn="onWarn"
                 @validate="onValidate"
                 @dialog="onDialog"
-            >
+                @click="onClick">
             </component>
         </div>
         <div class="ro-questionnaire-submit-button">
@@ -33,8 +32,7 @@
                 :name="mobileButtonName"
                 :is-block="true"
                 :is-disabled="!(!disableSubmit && isComplete)"
-                @click="onClickSubmit"
-            >
+                @click="onClickSubmit">
                 {{submitHint}}
             </MobileButton>
         </div>
@@ -66,23 +64,25 @@
     import ROChoice from './choice.js';
     import ROMultipleChoice from './multipleChoice.js';
     import ROAddressLocation from './addressLocation.vue';
-    import ROAddressPicker from './addressPicker.vue';
     import ROTextarea from './textarea.vue';
     import ROUploader from './uploader.js';
-    import RODatePicker from './datePicker.vue';
+    import ROPlaceholder from './placeholder.vue';
     import ROSelect from './select.vue';
     import ROInput from './input.vue';
     import ROSegment from './segment.vue';
+
+    /**
+     * 问卷
+     */
     export default {
         name: 'ROQuestionnaire',
         components: {
             ROChoice,
             ROMultipleChoice,
             ROAddressLocation,
-            ROAddressPicker,
             ROTextarea,
             ROUploader,
-            RODatePicker,
+            ROPlaceholder,
             ROSelect,
             ROInput,
             ROSegment,
@@ -248,12 +248,19 @@
             console.log(this.required);
         },
         methods: {
-            onUpdate: function(patch) {
+            /**
+             * 设置数据
+             *
+             * @param patch 数据
+             *  - id
+             *  - result 结果
+             */
+            setResult: function(patch) {
                 for (let i = 0, len = this.questions.length; i < len; i++) {
                     const question = this.questions[i];
                     if (question.id === patch.id) {
                         if ('production' !== process.env.NODE_ENV) {
-                            console.log('onUpdate', question.id, patch.result);
+                            console.log('setResult', question.id, patch.result);
                         }
                         question.result = patch.result;
                         break;
@@ -309,6 +316,13 @@
                     return false;
                 }
                 return true;
+            },
+
+            /**
+             * 点击事件
+             */
+            onClick(id) {
+                this.$emit('click', id);
             },
         },
     };

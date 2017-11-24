@@ -26,6 +26,12 @@ normalize-weui不再对颜色进行处理
 
 1. 修改Select的样式，使用原生<select>
 
+#### v0.0.53
+
+1. 删除DatePicker和AddressPicker，使用Placeholder组件替代
+1. 点击Placeholder组件，将触发 @click(id) 事件
+
+
 ### Version
 
 #### v0.0.32
@@ -96,6 +102,11 @@ normalize-weui不再对颜色进行处理
 
 1. 修改uploader的result逻辑，将string修改为array
 
-#### v.0.0.52
+#### v0.0.52
 
 1. 修复uploader组件的错误
+
+#### v0.0.53
+
+1. 删除DatePicker和AddressPicker，使用Placeholder组件替代
+1. 点击Placeholder组件，将触发 @click(id) 事件
