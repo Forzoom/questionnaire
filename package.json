@@ -1,6 +1,6 @@
 {
   "name": "@forzoom/questionnaire",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "description": "questionnaire",
   "main": "dist/questionnaire.min.js",
   "scripts": {

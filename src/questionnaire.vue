@@ -23,35 +23,19 @@
                 @foreground="onForeground"
                 @warn="onWarn"
                 @validate="onValidate"
-                @dialog="onDialog"
                 @click="onClick">
             </component>
         </div>
         <div class="ro-questionnaire-submit-button">
             <MobileButton
                 :name="mobileButtonName"
+                :class="mobileButtonClass"
+                :style="mobileButtonStyle"
                 :is-block="true"
                 :is-disabled="!(!disableSubmit && isComplete)"
                 @click="onClickSubmit">
                 {{submitHint}}
             </MobileButton>
-        </div>
-        <div v-if="showLoading">
-            <div class="weui-mask_transparent"></div>
-            <div class="weui-toast">
-                <i class="weui-loading weui-icon_toast"></i>
-                <p class="weui-toast__content">数据加载中</p>
-            </div>
-        </div>
-        <div v-if="showDialog">
-            <div class="weui-mask"></div>
-            <div class="weui-dialog">
-                <div class="weui-dialog__hd"><strong class="weui-dialog__title">{{dialogTitle}}</strong></div>
-                <div class="weui-dialog__bd">{{dialogContent}}</div>
-                <div class="weui-dialog__ft">
-                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" @click="showDialog = false;">确定</a>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -146,9 +130,19 @@
              */
             mobileButtonName: {
                 type: String,
-                default() {
-                    return '';
-                },
+                default: '',
+            },
+            /**
+             * mobileButton的样式
+             */
+            mobileButtonStyle: {
+                type: [ Array, Object, ],
+            },
+            /**
+             * mobileButton的样式类
+             */
+            mobileButtonClass: {
+                type: [ Array, Object, ],
             },
             /**
              * 要求检查的required，包含类型 {type: 'equal', key, value}
@@ -162,12 +156,8 @@
         },
         data: function() {
             return {
-                showDialog: false, // 是否显示dialog
-                showLoading: false, // 是否显示load
                 background: false, // 是否在后台，即在弹窗之后，用来判断是否需要锁定touch事件 => no
                 warnCount: 0, // 当前的warn的数量
-                dialogTitle: null,
-                dialogContent: null,
             };
         },
         computed: {
@@ -244,9 +234,6 @@
                 this.isComplete;
             },
         },
-        mounted() {
-            console.log(this.required);
-        },
         methods: {
             /**
              * 设置数据
@@ -256,6 +243,7 @@
              *  - result 结果
              */
             setResult: function(patch) {
+                this.$emit('item', patch);
                 for (let i = 0, len = this.questions.length; i < len; i++) {
                     const question = this.questions[i];
                     if (question.id === patch.id) {
@@ -289,19 +277,6 @@
             },
             onValidate: function() {
                 this.warnCount--;
-            },
-            onDialog: function(val) {
-                this.dialogTitle = val.dialogTitle;
-                this.dialogContent = val.dialogContent;
-                this.showDialog = true;
-            },
-            // 显示load
-            processing: function() {
-                this.showLoading = true;
-            },
-            // 隐藏load
-            finish: function() {
-                this.showLoading = false;
             },
             // 进入到后台
             goBackground: function() {

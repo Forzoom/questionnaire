@@ -122,3 +122,7 @@ normalize-weui不再对颜色进行处理
 #### v0.0.55
 
 1. Placeholder接收source.text作为数据显示，删除无用代码
+
+#### v0.0.56
+
+1. 删除loading和dialog样式，添加item事件，select支持disabled
