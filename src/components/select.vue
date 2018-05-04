@@ -51,7 +51,7 @@
              * value => text 的 map
              */
             map: function() {
-                const result = {};
+                var result = {};
                 this.source.slots.forEach(slot => {
                     result[slot.value] = slot.text;
                 });
@@ -61,7 +61,7 @@
              * 当没有数据时候显示的内容
              */
             placeholder: function() {
-                const text = this.map[this.currentValue] || '';
+                var text = this.map[this.currentValue] || '';
                 return this.source ?
                     (this.source.disabled ?
                         `${text}(当前不可修改)` :

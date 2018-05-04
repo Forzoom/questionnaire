@@ -44,17 +44,17 @@ export default {
         /**
          * 当前已经上传的图片的数量
          */
-        imageCount() {
+        imageCount: function() {
             return this.count;
         },
         /**
          * 总的可以上传的图片数量
          */
-        imageSize() {
+        imageSize: function() {
             return this.source.size;
         },
     },
-    data() {
+    data: function() {
         return {
             // 当前已经上传的图片数量
             count: 0,
@@ -64,8 +64,8 @@ export default {
         /**
          * 当新图片添加时触发，将serverId发送出去
          */
-        onAdd() {
-            const images = this.$refs.uploader.getImages();
+        onAdd: function() {
+            var images = this.$refs.uploader.getImages();
             this.count = images.length;
             this.$emit('item', {
                 id: this.id,
@@ -75,8 +75,8 @@ export default {
         /**
          * 当图片被删除时触发
          */
-        onRemove() {
-            const images = this.$refs.uploader.getImages();
+        onRemove: function() {
+            var images = this.$refs.uploader.getImages();
             this.count = images.length;
             this.$emit('item', {
                 id: this.id,
@@ -88,12 +88,12 @@ export default {
          *
          * @param {Array<{image, serverId}> images
          */
-        updateImage(images) {
+        updateImage: function(images) {
             this.count = images.length;
             this.$refs.uploader.setImages(images);
         }
     },
-    mounted() {
+    mounted: function() {
         this.updateImage(this.result);
     },
     watch: {
@@ -102,8 +102,8 @@ export default {
             this.updateImage(val);
         },
     },
-    render(h) {
-        const bd = h('div', {
+    render: function(h) {
+        var bd = h('div', {
             'class': [ 'weui-cell__bd', ],
         }, [
             h('WechatUploader', {

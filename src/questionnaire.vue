@@ -45,15 +45,15 @@
         _Vue,
     } from './install.js';
     import MobileButton from '@forzoom/mobile-button';
-    import ROChoice from './choice.js';
-    import ROMultipleChoice from './multipleChoice.js';
-    import ROAddressLocation from './addressLocation.vue';
-    import ROTextarea from './textarea.vue';
-    import ROUploader from './uploader.js';
-    import ROPlaceholder from './placeholder.vue';
-    import ROSelect from './select.vue';
-    import ROInput from './input.vue';
-    import ROSegment from './segment.vue';
+    import ROChoice from './components/choice.js';
+    import ROMultipleChoice from './components/multipleChoice.js';
+    import ROAddressLocation from './components/addressLocation.vue';
+    import ROTextarea from './components/textarea.vue';
+    import ROUploader from './components/uploader.js';
+    import ROPlaceholder from './components/placeholder.vue';
+    import ROSelect from './components/select.vue';
+    import ROInput from './components/input.vue';
+    import ROSegment from './components/segment.vue';
 
     /**
      * 问卷

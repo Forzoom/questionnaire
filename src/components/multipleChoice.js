@@ -1,24 +1,20 @@
 // <template>
-//     <div class="weui-cells weui-cells_radio">
+//     <div class="weui-cells weui-cells_checkbox">
 //         <label v-for="choice in source" class="weui-cell weui-check__label" :for="`${id}_${choice.value}`">
+//             <div class="weui-cell__hd" :style="{color: color}">
+//                 <input type="checkbox" class="weui-check" :id="`${id}_${choice.value}`" :value="choice.value"  v-model="val">
+//                 <i class="weui-icon-checked"></i>
+//             </div>
 //             <div class="weui-cell__bd">
 //                 <p>{{choice.text}}</p>
-//             </div>
-//             <div class="weui-cell__ft" :style="{color: color}">
-//                 <input type="radio" class="weui-check" :id="`${id}_${choice.value}`"  :value="choice.value" v-model="val">
-//                 <span class="weui-icon-checked"></span>
 //             </div>
 //         </label>
 //     </div>
 // </template>
 
-
 export default {
-    name: 'ROChoice',
+    name: 'ROMultiChoice',
     props: {
-        /**
-         *
-         */
         id: {
             required: true,
             type: String,
@@ -31,45 +27,49 @@ export default {
                 return [];
             },
         },
-        /**
-         * 结果
-         */
         result: {
-            type: String,
-        },
-        /**
-         * 勾选框所显示的颜色
-         */
-        color: '', // 颜色
-    },
-    computed: {
-        val: {
-            get: function() {
-                return this.result;
-            },
-            set: function(val) {
-                this.$emit('item', {
-                    id: this.id,
-                    result: val,
-                });
+            type: Array,
+            default() {
+                return [];
             },
         },
+        color: '',
     },
-    render(h) {
-        const vm = this;
-        const labels = [];
+    data: function() {
+        return {
+            // 最终的结果
+            val: [],
+        };
+    },
+    watch: {
+        '$prop.result': function(val) {
+            this.val = val;
+        },
+        val: function(val) {
+            this.$emit('item', {
+                id: this.id,
+                result: val,
+            });
+        },
+    },
+    mounted: function() {
+        this.val = this.result;
+    },
+    render: function(h) {
+        var vm = this;
+        var labels = [];
 
         for (let i = 0, len = vm.source.length; i < len; i++) {
-            const choice = vm.source[i];
+            var choice = vm.source[i];
             // 渲染bd
-            const bd = h('div', {
-                'class': [ 'weui-cell__bd', ],
+            var hd = h('div', {
+                'class': [ 'weui-cell__hd', ],
             }, [
                 h('p', {}, choice.text),
             ]);
             // 渲染ft
-            const ft = h('div', {
-                'class': [ 'weui-cell__ft', ],
+            var bd = h('div', {
+                'class': [ 'weui-cell__bd', ],
                 style: {
                     color: vm.color,
                 },
@@ -78,13 +78,13 @@ export default {
                 h('input', {
                     'class': [ 'weui-check', ],
                     attrs: {
-                        type: 'radio',
+                        type: 'checkbox',
                         id: `${vm.id}_${choice.value}`,
                         value: choice.value,
                         // checked: false,
                     },
                     domProps: {
-                        checked: choice.value === vm.val,
+                        checked: vm.val.indexOf(choice.value) !== -1,
                     },
                 }),
                 // span
@@ -93,26 +93,34 @@ export default {
                 }),
             ]);
             // label
-            const label = h('label', {
+            var label = h('label', {
                 'class': [ 'weui-cell', 'weui-check__label', ],
                 attrs: {
                     for: `${vm.id}_${choice.value}`,
                 },
                 on: {
-                    click: function(val) {
-                        vm.val = choice.value;
+                    click: function toggle(e) {
+                        var pos = vm.val.indexOf(choice.value);
+                        // 已经存在的情况下
+                        if (pos !== -1) {
+                            vm.val.splice(pos, 1);
+                        } else {
+                            // 不存在的情况下
+                            vm.val.push(choice.value);
+                        }
+                        e.preventDefault();
                     },
                 },
             }, [
+                hd,
                 bd,
-                ft,
             ]);
 
             labels.push(label);
         }
 
         return h('div', {
-            'class': [ 'weui-cells', 'weui-cells_radio', ],
+            'class': [ 'weui-cells', 'weui-cells_checkbox', ],
         }, labels);
     },
 };

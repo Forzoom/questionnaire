@@ -69,7 +69,7 @@
                 },
                 set: function(val) {
                     // 检测inputValidator
-                    const source = this.mergeSource;
+                    var source = this.mergeSource;
                     if ('production' !== process.env.NODE_ENV) {
                         console.log('inputValidator', source.inputValidator, !source.inputValidator.test(val));
                     }
@@ -92,13 +92,13 @@
             },
         },
         methods: {
-            onFocus() {
+            onFocus: function() {
                 this.focus = true;
             },
-            onBlur() {
+            onBlur: function() {
                 this.focus = false;
                 // 检测并且判断是否需要warn
-                const source = this.mergeSource;
+                var source = this.mergeSource;
                 if (source.submitValidator) {
                     if (!source.submitValidator.test(this.val) && !this.warn) {
                         this.warn = true;
